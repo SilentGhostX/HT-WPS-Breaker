@@ -346,6 +346,7 @@ while [ "$re" == 'Y' ] || [ "$re" == 'y' ] || [ "$re" == 'Yes' ] || [ "$re" == '
 do
 re=nothing
 clear
+trap - SIGINT SIGQUIT SIGTSTP
 echo ""
 sleep 0.1
 echo -e $Cyan   "    +${Yellow}-------------------------------------------------------------------${Cyan}+"
