@@ -1,5 +1,5 @@
-# PSK-Grabber
-PSK grabber is a small tool based on the bash script language, it can help you to extract the wps pin of many vulnerable
+# HT-WPS BREAKER
+High Touch WPS Breaker [HT-WB] is a small tool based on the bash script language, it can help you to extract the wps pin of many vulnerable
 routers and get the password, in the last i want to notice that PSK grabber in its process is using these tools :
 -"Piexiewps"
 -"Reaver"
