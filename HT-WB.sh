@@ -353,21 +353,25 @@ echo -e $Cyan   "    +${Yellow}-------------------------------------------------
 sleep 0.1
 echo -e $Yellow   "    |                                                                   |"
 sleep 0.1
-echo -e "     |$Red   ██████╗ ███████╗██╗  ██╗      ${Green}██████╗ ██████╗  █████╗ ██████╗ $Yellow  |"
+echo -e "     |$Red   ██╗  ██╗████████╗   ${Green}██╗    ██╗██████╗ ███████╗ ${BCyan}██${Yellow}╗${BCyan} ██${Yellow}╗ ${Purple}██████╗ $Yellow |"
 sleep 0.1    
-echo -e "     |$Red   ██╔══██╗██╔════╝██║ ██╔╝     ${Green}██╔════╝ ██╔══██╗██╔══██╗██╔══██╗$Yellow  |"   
+echo -e "     |$Red   ██║  ██║╚══██╔══╝   ${Green}██║    ██║██╔══██╗██╔════╝${Red}████████${Yellow}╗${Purple}██╔══██╗$Yellow |"   
 sleep 0.1
-echo -e "     |$BRed   ██████╔╝███████╗█████╔╝${White}█████╗${BGreen}██║  ███╗██████╔╝███████║██████╔╝$Yellow  |"  
+echo -e "     |$BRed   ███████║   ██║${White}█████╗${BGreen}██║ █╗ ██║██████╔╝███████╗${Yellow}╚${BCyan}██${Yellow}╔═${BCyan}██${Yellow}╔╝${BPurple}██████╔╝$Yellow |"  
 sleep 0.1 
-echo -e "     |$BRed   ██╔═══╝ ╚════██║██╔═██╗${White}╚════╝${BGreen}██║   ██║██╔══██╗██╔══██║██╔══██╗$Yellow  |" 
+echo -e "     |$BRed   ██╔══██║   ██║${White}╚════╝${BGreen}██║███╗██║██╔═══╝ ╚════██${Yellow}║${Red}████████${Yellow}╗${BPurple}██╔══██╗$Yellow |" 
 sleep 0.1
-echo -e "     |$Red   ██║     ███████║██║  ██╗     ${Green}╚██████╔╝██║  ██║██║  ██║██████╔╝$Yellow  |" 
+echo -e "     |$Red   ██║  ██║   ██║      ${Green}╚███╔███╔╝██║     ███████║${Yellow}╚${BCyan}██${Yellow}╔═${BCyan}██${Yellow}╔╝${Purple}██████╔╝$Yellow |" 
 sleep 0.1
-echo -e "     |$Red   ╚═╝     ╚══════╝╚═╝  ╚═╝      ${Green}╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ $Yellow  |"  
+echo -e "     |$Red   ╚═╝  ╚═╝   ╚═╝      ${Green} ╚══╝╚══╝ ╚═╝     ╚══════╝${Yellow} ╚═╝ ╚═╝ ${Purple}╚═════╝ $Yellow |"  
 sleep 0.1
 echo -e "     |                                                                   |"
 sleep 0.1
-echo -e $Cyan   "    +${Yellow}-------------------------------------------------------------------${Cyan}+"
+echo -e $Cyan   "    +${Yellow}-------------------------------------------------------------------${Cyan}+${Yellow}"
+sleep 0.1
+echo -e "                          |${BRed} High${BYellow} Touch${BPurple} WPS${BGreen} Breaker${Yellow} |"
+sleep 0.1
+echo -e "                          ${Cyan}+${Yellow}------------------------${Cyan}+"
 sleep 0.1
 echo ""
 echo -e "  $Yellow[1]$Cyan Attack automatically."
@@ -815,7 +819,7 @@ case $menu in
 			   ;;
 esac
 echo ""
-echo -e "$White [${Green}ok${White}]$Green PSK-Grabber$White By$BYellow Silent Ghost X."
+echo -e "$White [${Green}ok${White}]$Green HT-WPS Breaker$White By$BYellow Silent Ghost X."
 echo ""
 if [ "$re" != "yes" ]
 	 then
@@ -842,3 +846,4 @@ fi
 		   echo -en "\033[1A\033[2K"
    done
 done 
+
