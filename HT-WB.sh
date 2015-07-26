@@ -383,7 +383,7 @@ echo -e -n "$White     [+] Select$BRed one$White thing from the menu : "
 read menu
 case $menu in
              "1")
-		 reaver 2&> Ver_Reaver.txt
+			     reaver 2&> Ver_Reaver.txt
                  pixiewps 2&> Ver_Pixiewps.txt
 				 airmon-ng > .airmon-ng.txt
 				 Ver_Reaver=`cat Ver_Reaver.txt | grep 'Reaver v1.5.2'`
@@ -846,4 +846,3 @@ fi
 		   echo -en "\033[1A\033[2K"
    done
 done 
-
