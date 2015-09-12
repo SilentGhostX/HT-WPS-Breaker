@@ -496,7 +496,7 @@ SELECT_CAPTURE_CRACK() {
 			                            else
 			                            	echo -e -n " ${Red}[${Yellow}"$i"${Red}]\t"
 			                            fi
-										for (( c=0; c<=62; c++))
+										for (( c=0; c<=66; c++))
 										    do
 											  if [ "$Ver_vun" == "${Vun_MAC[$c]}" ]
 											       then
@@ -717,6 +717,7 @@ Vun_MAC[62]="A6:78:9E"
 Vun_MAC[63]="A6:DA:36"
 Vun_MAC[64]="A6:CF:F3"
 Vun_MAC[65]="C4:A8:1D"
+Vun_MAC[66]="CE:C1:70"
 re='Y'
 while [ "$re" == 'Y' ] || [ "$re" == 'y' ] || [ "$re" == 'Yes' ] || [ "$re" == 'YES' ] || [ "$re" == 'yes' ] || [ "$re" == 'O' ] || [ "$re" == 'o' ] || [ "$re" == 'Oui' ] || [ "$re" == 'OUI' ] || [ "$re" == 'oui' ]
 do
