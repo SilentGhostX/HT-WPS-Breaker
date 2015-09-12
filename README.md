@@ -7,4 +7,20 @@ routers and get the password, in the last i want to notice that HT-WPS Breaker i
 -"Aircrack-ng"
 and some commands in automatic way to do its job i hope you like my tool.
 
--Video Tutorial : https://www.youtube.com/watch?v=GZX-cDD7gN8
+- Video Tutorial : https://www.youtube.com/watch?v=GZX-cDD7gN8
+
+- Crack Any Hidden wireless network by using HT-WPS Breaker : https://www.youtube.com/watch?v=jpGIFdM_7zY
+
+
+
+
+[!] Here is how to make the script works :
+1 - Copy HT-WPS-Breaker.zip to Desktop .
+2 - Open The Terminal .
+3 - Type the following commands :
+         # cd Desktop
+         # unzip HT-WPS-Breaker.zip
+		 # cd HT-WPS-Breaker
+		 # chmod +x HT-WB.sh
+		 # ./HT-WB.sh     or      # bash HT-WB.sh
+
