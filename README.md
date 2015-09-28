@@ -23,9 +23,10 @@ and some commands in automatic way to do its job i hope you like my tool.
 * Copy HT-WPS-Breaker.zip to Desktop .
 * Open The Terminal .
 * Type the following commands :
-         - [X] cd Desktop
-         - [X] unzip HT-WPS-Breaker.zip
-         - [X] cd HT-WPS-Breaker
-         - [X] chmod +x HT-WB.sh
-         - [X] ./HT-WB.sh  or  bash HT-WB.sh
+
+    - [X] cd Desktop
+    - [X] unzip HT-WPS-Breaker.zip
+    - [X] cd HT-WPS-Breaker
+    - [X] chmod +x HT-WB.sh
+    - [X] ./HT-WB.sh  or  bash HT-WB.sh
 
