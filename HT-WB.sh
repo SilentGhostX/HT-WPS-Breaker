@@ -912,6 +912,7 @@ Vun_MAC[63]="A6:DA:36"
 Vun_MAC[64]="A6:CF:F3"
 Vun_MAC[65]="C4:A8:1D"
 Vun_MAC[66]="CE:C1:70"
+Vun_MAC[67]="A6:01:C0"
 re='Y'
 while [ "$re" == 'Y' ] || [ "$re" == 'y' ] || [ "$re" == 'Yes' ] || [ "$re" == 'YES' ] || [ "$re" == 'yes' ] || [ "$re" == 'O' ] || [ "$re" == 'o' ] || [ "$re" == 'Oui' ] || [ "$re" == 'OUI' ] || [ "$re" == 'oui' ]
 do
