@@ -1559,7 +1559,7 @@ if [ "$mode_monitor" == "active" ]
         airmon-ng stop $mon > /dev/null
         echo ""
 fi
-echo -e "$White [+]$Green Greetz to ${White}: ${Cyan}AKAS${White} ."
+echo -e "$White [+]$Green Greetz to ${White}: ${Cyan}AKAS${White} & ${Cyan}Fantome195${White} ."
 echo ""
 echo -e "             ${Green}########################################################"
 sleep 0.1
