@@ -628,7 +628,7 @@ SELECT_CAPTURE_CRACK() {
 			                            else
 			                            	echo -e -n " ${Red}[${Yellow}"$i"${Red}]\t"
 			                            fi
-										for (( c=0; c<=66; c++))
+										for (( c=0; c<=67; c++))
 										    do
 											  if [ "$Ver_vun" == "${Vun_MAC[$c]}" ]
 											       then
