@@ -34,7 +34,7 @@ if [ "$mode_monitor" == "active" ]
         airmon-ng stop $mon > /dev/null
         echo ""
 fi
-echo -e "$White [+]$Green Greetz to : ${Cyan}AKAS${White} ."
+echo -e "$White [+]$Green Greetz to : ${Cyan}AKAS${White} & ${Cyan}Fantome195${White} ."
 echo ""
 exit
 }
@@ -291,18 +291,26 @@ Ver_Mon_WCar_Fun() {
 								              V_number=0
 								   fi
 						   done
-						   trap kill_load SIGINT
-						   airmon-ng start $wlan > /dev/null &
-						   PID="$!"
 						   Wait_Msg="Enabling monitor mode on$Green $wlan $White."
 						   End_Msg="${Green}Mode Monitor$White is enable ."
-						   Loading
+						   Ver_Mon=`echo $wlan | grep -E *mon$`
+						   if [ "$Ver_Mon" == "" ]
+						   	  then
+						   	      trap kill_load SIGINT
+						          airmon-ng start $wlan > /dev/null 2> /dev/null &
+						          PID="$!"
+						          Loading
+						   else
+						   	      wlan=`echo $wlan | rev | cut -c4- | rev`
+						   	      echo -ne "$White[${Green} ok ${White}] $End_Msg"
+						   	      echo ""
+						   fi
 						   trap - SIGINT SIGQUIT SIGTSTP
                            mode_monitor="active"
-                           if [ "$Ver_aircrack_ng" != "" ]
+                           if [ "$Ver_aircrack_ng" != "" ] || [ "$Ver_Mon" != "" ]
                            	  then
                                   Ver_Monitor_mode=`iwconfig ${wlan}mon 2>&1 | grep Mode:Monitor | awk '{print $1}'`
-                                  if [ "$Ver_Monitor_mode" == "" ]
+                                  if [ "$Ver_Monitor_mode" == "" ] || [ "$Ver_Mon" != "" ]
                                   	 then
                                   	     ifconfig ${wlan}mon down
                                   	     iwconfig ${wlan}mon mode monitor
@@ -316,7 +324,7 @@ Ver_Mon_WCar_Fun() {
                             echo -e $White" [${Red}!${White}] Is no wireless device to put into${Green} monitor mode${White} ."
                             echo ""
                             sleep 0.5
-                 elif [ $VerCar -le 0 ]
+                 elif [ $VerCar -le 0 ] && [ "$VerMon" = "" ]
                         then   
 						    echo "" 
                             sleep 0.5
