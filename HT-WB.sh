@@ -274,6 +274,7 @@ Ver_Mon_WCar_Fun() {
 						   done
 						   echo ""
 						   echo ""
+						   V_number=0
 						   while [ "$V_number" != "1" ]
 								 do
 								   echo -en "\033[1A\033[2K"
@@ -377,6 +378,7 @@ Ver_Mon_Fun() {
 						            done
 									echo ""
 									echo ""
+									V_number=0
 									while [ "$V_number" != "1" ]
 									        do
 											  echo -en "\033[1A\033[2K"
@@ -921,6 +923,7 @@ Vun_MAC[64]="A6:CF:F3"
 Vun_MAC[65]="C4:A8:1D"
 Vun_MAC[66]="CE:C1:70"
 Vun_MAC[67]="A6:01:C0"
+Vun_MAC[68]="BC:14:0C"
 re='Y'
 while [ "$re" == 'Y' ] || [ "$re" == 'y' ] || [ "$re" == 'Yes' ] || [ "$re" == 'YES' ] || [ "$re" == 'yes' ] || [ "$re" == 'O' ] || [ "$re" == 'o' ] || [ "$re" == 'Oui' ] || [ "$re" == 'OUI' ] || [ "$re" == 'oui' ]
 do
@@ -1490,6 +1493,7 @@ case $menu in
 						                    done
 									        echo ""
 									        echo ""
+											V_number=0
 									        while [ "$V_number" != "1" ]
 									                do
 											          echo -en "\033[1A\033[2K"
