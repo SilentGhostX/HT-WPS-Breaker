@@ -332,7 +332,7 @@ Ver_Mon_WCar_Fun() {
                            	                    fi
                            	                else
                            	                	Interface=`cat ${Temporary}/.airmon-ng.txt | grep ${m[$c]} | cut -f1`
-                           	                    Chipset=`cat ${Temporary}/.airmon-ng.txt | grep ${m[$c]} | cut -f1-3`
+                           	                    Chipset=`cat ${Temporary}/.airmon-ng.txt | grep ${m[$c]} | cut -f2-3`
                            	                    if [ "$Num_Line" -lt "10" ]
                            	             	       then
                            	                           echo -e "  ${Red}[${Yellow}0$c${Red}]$White   $Interface           $Chipset"
