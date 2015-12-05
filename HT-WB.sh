@@ -319,7 +319,7 @@ Ver_Mon_WCar_Fun() {
                            	         else
                            	         	 airmon-zc 2> /dev/null > /dev/null
                            	         	 AIR_ZC="echo $?"
-                           	         	 if [ "AIR_ZC" == 0 ]
+                           	         	 if [ "$AIR_ZC" == 0 ]
                            	         	 	then
                            	         	        airmon-zc > ${Temporary}/.airmon-zc.txt
 	     						                Interface=`cat ${Temporary}/.airmon-zc.txt | grep ${m[$c]} | cut -f2`
@@ -365,30 +365,12 @@ Ver_Mon_WCar_Fun() {
 						   done
 						   Wait_Msg="Enabling monitor mode on$Green $wlan $White."
 						   End_Msg="${Green}Mode Monitor$White is enabled ."
-						   Ver_Mon=`echo $wlan | grep -E *mon$`
-						   if [ "$Ver_Mon" == "" ]
-						   	  then
-						   	      trap kill_load SIGINT
-						          airmon-ng start $wlan > /dev/null 2> /dev/null &
-						          PID="$!"
-						          Loading
-						   else
-						   	      wlan=`echo $wlan | rev | cut -c4- | rev`
-						   	      echo -ne "$White[${Green} ok ${White}] $End_Msg"
-						   	      echo ""
-						   fi
+						   trap kill_load SIGINT
+						   ifconfig $wlan down && iwconfig $wlan mode monitor && ifconfig $wlan up > /dev/null 2> /dev/null &
+						   PID="$!"
+						   Loading
 						   trap - SIGINT SIGQUIT SIGTSTP
                            mode_monitor="active"
-                           if [ "$Ver_aircrack_ng" != "" ] || [ "$Ver_Mon" != "" ]
-                           	  then
-                                  Ver_Monitor_mode=`iwconfig ${wlan}mon 2>&1 | grep Mode:Monitor | awk '{print $1}'`
-                                  if [ "$Ver_Monitor_mode" == "" ] || [ "$Ver_Mon" != "" ]
-                                  	 then
-                                  	     ifconfig ${wlan}mon down
-                                  	     iwconfig ${wlan}mon mode monitor
-                                  	     ifconfig ${wlan}mon up
-                                  fi
-                           fi
                  elif [ "$VerCar" -le 0 ] && [ "$menu" -eq 6 ]
 				        then
 						    echo "" 
@@ -816,11 +798,12 @@ WEP_function() {
 						            Ver_Key=`cat ${Temporary}/aircrack-ng_rslt.txt 2> /dev/null | grep -i "KEY FOUND"`
 						            if [ "$Ver_Key" != "" ]
 						            	then
-						                    Key=$(echo -e '\x'$(cat ${Temporary}/aircrack-ng_rslt.txt 2> /dev/null | grep -i "KEY FOUND" | cut -d' ' -f4 | sed -r 's/:/\\x/g') 2> /dev/null)
+						                    Key_ASCII=$(echo -e '\x'$(cat ${Temporary}/aircrack-ng_rslt.txt 2> /dev/null | grep -i "KEY FOUND" | awk '{print $4}' | sed -r 's/:/\\x/g') 2> /dev/null)
+						                    Key_HEX=$(cat ${Temporary}/aircrack-ng_rslt.txt 2> /dev/null | grep -i "KEY FOUND" | awk '{print $4}')
 						                else
 						                	Key=""
 						            fi
-						            if [ "$Key" != "" ]
+						            if [ "$Key_ASCII" != "" ]
 						            	then
 						            	    echo ""
 						            	    echo ""
@@ -828,14 +811,16 @@ WEP_function() {
 									        echo " [+] BSSID      >> $BSSID" >> ${Desktop_PATH}/Passwords\ \&\ Pins/${BSSID}.txt
 									        echo " [+] Privacy    >> $PRIVACY" >> ${Desktop_PATH}/Passwords\ \&\ Pins/${BSSID}.txt
 									        echo " [+] Channel    >> $CHANNEL" >> ${Desktop_PATH}/Passwords\ \&\ Pins/${BSSID}.txt 
-									        echo " [+] Key        >> \"$Key\"" >> ${Desktop_PATH}/Passwords\ \&\ Pins/${BSSID}.txt
+									        echo " [+] Hex Key    >> $Key_HEX" >> ${Desktop_PATH}/Passwords\ \&\ Pins/${BSSID}.txt 
+									        echo " [+] ASCII Key        >> \"${Key_ASCII}\"" >> ${Desktop_PATH}/Passwords\ \&\ Pins/${BSSID}.txt
 											echo " [+] Date       >> $cr_date" >> ${Desktop_PATH}/Passwords\ \&\ Pins/${BSSID}.txt
 											echo ""
 											echo -e "${White} [+]${Yellow} ESSID      ${Red}>>${Cyan} $ESSID" 
 									        echo -e "${White} [+]${Yellow} BSSID      ${Red}>>${Cyan} $BSSID"
 									        echo -e "${White} [+]${Yellow} Privacy    ${Red}>>${Green} $PRIVACY"
 									        echo -e "${White} [+]${Yellow} Channel    ${Red}>>${White} $CHANNEL"
-									        echo -e "${White} [+]${Yellow} Key        ${Red}>>${White} \"${Green}$Key${White}\""
+									        echo -e "${White} [+]${Yellow} Hex Key    ${Red}>>${Cyan} $Key_HEX"
+									        echo -e "${White} [+]${Yellow} ASCII Key  ${Red}>>${White} \"${Green}${Key_ASCII}${White}\""
 											echo -e "${White} [+]${Yellow} Date       ${Red}>>${White} $cr_date"
 											echo ""
 									        echo -e "$Yellow [+]$Green Congratulation (^_^) "
