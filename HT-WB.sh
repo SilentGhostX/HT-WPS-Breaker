@@ -2173,7 +2173,7 @@ echo -e "${White}     | ${Yellow} ID ${White} |                   ${BPurple}   N
 echo -e "${Yellow}     +${White}-------------------------------------------------------------------${Yellow}+"
 echo -e "${White}     | ${Red}[${Yellow}01${Red}]${White} |$Green Attack automatically with${Cyan} Wash${White} .        (${Red}WPS${Green}{${Yellow}WPA${White}/${Yellow}WPA2${Green}}${White})    |"
 echo -e "${White}     | ${Red}[${Yellow}02${Red}]${White} |$Green Attack automatically with${Cyan} Airodump-ng${White} . (${Red}WEP${White}/${Red}WPS${Green}{${Yellow}WPA${White}/${Yellow}WPA2${Green}}${White})|"
-echo -e "${White}     | ${Red}[${Yellow}03${Red}]${White} |$Green Manuel input${White} .                                             |"
+echo -e "${White}     | ${Red}[${Yellow}03${Red}]${White} |$Green Manual input${White} .                                             |"
 echo -e "${White}     | ${Red}[${Yellow}04${Red}]${White} |$Green If you want to crack an acces point's key with$BRed WPS PIN${White} .   |"
 echo -e "${White}     | ${Red}[${Yellow}05${Red}]${White} |$Green If you want to crack a$BRed Hidden$Green acces point${White} .                |"
 echo -e "${White}     | ${Red}[${Yellow}06${Red}]${White} |$Green ${Green}Enable${White} or ${Red}Disable${White} The${Cyan} Monitor Mode${White} .                       |"
